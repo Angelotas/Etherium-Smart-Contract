@@ -13,14 +13,20 @@ class Car {
     }
 }
 
-beforeEach(() => { 
+let accounts;
+
+beforeEach(async () => { 
     // Get list of all accounts
-    web3.eth.getAccounts().then((accounts) => console.log(accounts));
+    accounts = await web3.eth.getAccounts();
 });
 
 describe('Inbox', () => {
+    it('gets 10 contracts from mocha provider', () => {
+        assert.equal(accounts.length, 10);
+    });
+
     it('deploys a contract', () => {
-        assert.equal('stopped', 'stopped');
+        // Compile the contract
     });
 })
 
