@@ -2,22 +2,18 @@ const assert = require('assert');
 const ganace = require('ganache-cli');
 const Web3 = require('web3');
 const web3 = new Web3(ganace.provider());
-
-class Car {
-    park() {
-        return 'stopped';
-    }
-
-    drive() {
-        return 'vroom';
-    }
-}
+const { interface, bytecode } = require('../compile'); 
 
 let accounts;
+let inbox;
 
 beforeEach(async () => { 
     // Get list of all accounts
     accounts = await web3.eth.getAccounts();
+    // Use one of the accounts to deploy the contract
+    inbox = await new web3.eth.Contract(JSON.parse(interface))
+        .deploy({ data: bytecode, arguments: ['Hi there!'] }) // create the obtejct to deploy
+        .send({ from: accounts[0], gas: '1000000' });   // send the transaction to specific account
 });
 
 describe('Inbox', () => {
@@ -26,23 +22,6 @@ describe('Inbox', () => {
     });
 
     it('deploys a contract', () => {
-        // Compile the contract
+        assert.ok(inbox.options.address);
     });
 })
-
-/* let car;
-
-beforeEach(() => { 
-    car = new Car();
-    const printCar = () => console.log(car);
-});
-
-describe('Car', () => {
-    it('should park', () => {
-        assert.equal(car.park(), 'stopped');
-    });
-
-    it('should drive', () => {
-        assert.equal(car.drive(), 'vroom');
-    });
-}) */
