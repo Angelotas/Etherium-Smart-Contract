@@ -2,7 +2,7 @@ const assert = require('assert');
 const ganace = require('ganache-cli');
 const Web3 = require('web3');
 const web3 = new Web3(ganace.provider());
-const { interface, bytecode } = require('../compile'); 
+const { abi, evm } = require('../compile');
 
 const defaultContractMessage = 'Hi there!';
 let accounts;
@@ -12,8 +12,8 @@ beforeEach(async () => {
     // Get list of all accounts
     accounts = await web3.eth.getAccounts();
     // Use one of the accounts to deploy the contract
-    inbox = await new web3.eth.Contract(JSON.parse(interface))
-        .deploy({ data: bytecode, arguments: [defaultContractMessage] }) // create the obtejct to deploy
+    inbox = await new web3.eth.Contract(abi)
+        .deploy({ data: evm.bytecode.object, arguments: [defaultContractMessage] }) // create the obtejct to deploy
         .send({ from: accounts[0], gas: '1000000' });   // send the transaction to specific account
 });
 
